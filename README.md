@@ -2,7 +2,12 @@
 A Python driven yahoo account validation software developed by Tufayel
 
 # Screenshot
-<img src="https://raw.githubusercontent.com/TufayelLUS/Yahoo-Account-Checker/main/Sample.PNG" />
+<b><i>Figure:</i> Main Window</b><br>
+<img src="https://raw.githubusercontent.com/TufayelLUS/Yahoo-Account-Checker/main/Sample.PNG" /><br><br>
+<b><i>Figure:</i> Processing Screen</b><br>
+<img src="https://raw.githubusercontent.com/TufayelLUS/Yahoo-Account-Checker/main/Sample2.PNG" /><br><br>
+<b><i>Figure:</i> Processing Completed</b><br>
+<img src="https://raw.githubusercontent.com/TufayelLUS/Yahoo-Account-Checker/main/Sample3.PNG" /><br>
 
 # Use Cases
 This software is designed to check for username availability on yahoo website so that you can easily find your favourite username without having to type them again and again.
