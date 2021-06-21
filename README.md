@@ -21,6 +21,10 @@ You will be required to install
 
 To install requests module, after installing python, execute below command in your terminal:<br>
 <code>pip3 install requests</code>
+<br>
+Then open terminal in the folder where the script is located and type:
+On mac: <code>Python3 yahoo_checker.py</code>
+or on linux: <code>python3 yahoo_checker.py</code>
 
 # What I learnt by developing it?
 By going through the development process of this software, it helped me to practice different Python libraries and GUI application development. I have implemented threading, web scraping library named <b>requests</b>, GUI development library named <b>tkinter</b> and, regular expression to parse and extract the required data using <b>re</b> library to prepare this software. I hope you will like it.
