@@ -4,6 +4,7 @@ from tkinter import *
 import tkinter.scrolledtext as scrolledtext
 import threading
 from time import sleep
+from random import choice
 
 
 # function for checking the availability
@@ -21,6 +22,7 @@ def userExists(username, s):
     specData = re.findall(r'value="(.*?)" name="specData"', resp)[0]
     crumb = re.findall(r'value="(.*?)" name="crumb"', resp)[0]
     acrumb = re.findall(r'value="(.*?)" name="acrumb"', resp)[0]
+    sessionIndex = re.findall(r'value="(.*?)" name="sessionIndex"', resp)[0]
     link = "https://login.yahoo.com/account/module/create?validateField=yid"
     headers = {
         'Referer': 'https://login.yahoo.com/account/create?.intl=us&.lang=en-US&src=ym&activity=ybar-mail&pspid=2023538075&.done=https%3A%2F%2Fmail.yahoo.com%2Fd%3Fpspid%3D2023538075%26activity%3Dybar-mail&specId=yidReg&done=https%3A%2F%2Fmail.yahoo.com%2Fd%3Fpspid%3D2023538075%26activity%3Dybar-mail',
@@ -34,26 +36,27 @@ def userExists(username, s):
     }
     data = {
         'browser-fp-data': '{"language":"en-US","colorDepth":24,"deviceMemory":8,"pixelRatio":1,"hardwareConcurrency":4,"timezoneOffset":-360,"timezone":"Asia/Dhaka","sessionStorage":1,"localStorage":1,"indexedDb":1,"openDatabase":1,"cpuClass":"unknown","platform":"Win32","doNotTrack":"1","plugins":{"count":3,"hash":"e43a8bc708fc490225cde0663b28278c"},"canvas":"canvas winding:yes~canvas","webgl":1,"webglVendorAndRenderer":"Google Inc. (Intel)~ANGLE (Intel, Intel(R) HD Graphics 520 Direct3D11 vs_5_0 ps_5_0, D3D11-20.19.15.4380)","adBlock":0,"hasLiedLanguages":0,"hasLiedResolution":0,"hasLiedOs":0,"hasLiedBrowser":0,"touchSupport":{"points":0,"event":0,"start":0},"fonts":{"count":49,"hash":"411659924ff38420049ac402a30466bc"},"audio":"124.04347527516074","resolution":{"w":"1366","h":"768"},"availableResolution":{"w":"728","h":"1366"},"ts":{"serve":1624081774716,"render":1624081773747}}',
-        'specId': 'yidreg',
+        'specId': 'yidregsimplified',
         'cacheStored': '',
         'crumb': crumb,
         'acrumb': acrumb,
+        'sessionIndex': sessionIndex,
         'done': 'https://mail.yahoo.com/d?pspid=2023538075&activity=ybar-mail',
         'googleIdToken': '',
         'authCode': '',
         'attrSetIndex': '0',
         'specData': specData,
+        'multiDomain': '',
         'tos0': 'oath_freereg|us|en-US',
         'firstName': '',
         'lastName': '',
-        'yid': username,
+        'userid-domain': 'yahoo',
+        'userId': username,
         'password': '',
-        'shortCountryCode': 'US',
         'phone': '',
         'mm': '',
         'dd': '',
         'yyyy': '',
-        'freeformGender': '',
         'signup': '',
     }
     try:
@@ -61,20 +64,28 @@ def userExists(username, s):
     except:
         print("Failed to open {}".format(link))
         return None
+    print(resp)
     all_errors = resp.get('errors', [])
     if len(all_errors) == 0:
         return None
     for errors in all_errors:
-        if errors.get('name') == "yid":
+        if errors.get('name') == "userId":
             # print(errors.get('error'))
             return True
     return False
 
 
 # support function to create a separate thread from main thread
-def startChecker2(textBox, status_label, submitBtn, s):
+def startChecker2(textBox, proxy_textbox, status_label, submitBtn, s):
     all_lines = textBox.get('1.0', END).split('\n')
+    all_proxies = proxy_textbox.get('1.0', END).split('\n')
     submitBtn.config(state=DISABLED)
+    selected_proxy = choice(all_proxies)
+    if selected_proxy.strip() != "":
+        s.proxies = {
+            'http': selected_proxy,
+            'https': selected_proxy,
+        }
     status_label.config(text="Checking ...")
     counter = 1
     valid = 0
@@ -117,7 +128,7 @@ class YahooChecker():
 
     def createMainWindow(self):
         root = Tk()
-        root.title("Yahoo Username Checker - Made by Tufayel")
+        root.title("Yahoo Username Checker 2023 Edition - Made by Tufayel")
         root.resizable(False, False)
         root.geometry("800x550")
 
@@ -128,11 +139,17 @@ class YahooChecker():
             main_frame, text="Type or paste your list of usernames below: ", font=('', 15, 'normal'))
         put_label.pack()
 
-        textBox = scrolledtext.ScrolledText(main_frame, height=20, undo=True)
+        textBox = scrolledtext.ScrolledText(main_frame, height=15, undo=True)
         textBox.pack(expand=True, fill='both', padx=10, pady=10)
 
+        proxy_label = Label(
+            main_frame, text="Type or paste your proxy list below(http://username:password@ip:port formats only): ", font=('', 15, 'normal'))
+        proxy_label.pack()
+        proxy_textbox = scrolledtext.ScrolledText(main_frame, height=5, undo=True)
+        proxy_textbox.pack(expand=True, fill='both', padx=10, pady=10)
+
         submitBtn = Button(main_frame, text="Start Checking",
-                           relief=GROOVE, font=('', 10, 'normal'), command=lambda: self.startChecker(textBox, status_label, submitBtn))
+                           relief=GROOVE, font=('', 10, 'normal'), command=lambda: self.startChecker(textBox, proxy_textbox, status_label, submitBtn))
         submitBtn.pack(padx=10, pady=10)
 
         status_label = Label(root, text="Status: IDLE",
@@ -142,9 +159,9 @@ class YahooChecker():
 
         root.mainloop()
 
-    def startChecker(self, textBox, status_label, submitBtn):
+    def startChecker(self, textBox, proxy_textbox, status_label, submitBtn):
         th = threading.Thread(target=startChecker2, args=(
-            textBox, status_label, submitBtn, self.s))
+            textBox, proxy_textbox, status_label, submitBtn, self.s))
         th.daemon = True
         th.start()
 
