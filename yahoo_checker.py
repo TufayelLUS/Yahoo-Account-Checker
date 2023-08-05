@@ -64,7 +64,7 @@ def userExists(username, s):
     except:
         print("Failed to open {}".format(link))
         return None
-    print(resp)
+    # print(resp)
     all_errors = resp.get('errors', [])
     if len(all_errors) == 0:
         return None
