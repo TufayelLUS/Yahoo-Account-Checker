@@ -1,5 +1,5 @@
 # Yahoo Account Checker
-A Python driven yahoo account registration availability validation software developed by Tufayel with proxy integration support
+A Python driven yahoo username availability validation software developed by Tufayel with proxy integration support
 
 # Screenshot
 <b><i>Figure:</i> Main Window</b><br>
